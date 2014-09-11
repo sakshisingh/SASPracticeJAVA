@@ -1,5 +1,6 @@
 package DataStructures;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,60 +102,80 @@ public class BinarySearchTree {
 			System.out.println("Empty Tree...");
 		else {
 			if (key < node.getData()) {
-				BinaryTreeNode child = node.getLeft();
-				// Mark child for deletion if key found.
-				if (child.getData() == key) {
-					// If node has no further children, delete its reference
-					// from parent.
-					if (child.getLeft() == null && child.getRight() == null)
-						node.setLeft(null);
-					else {
-						// If only left child exists, assign that to the parent
-						if (child.getLeft() != null && child.getRight() == null)
-							node.setLeft(child.getLeft());
-						// If only right child exists, assign that to the parent
-						if (child.getLeft() == null && child.getRight() != null)
-							node.setLeft(child.getRight());
-						if (child.getLeft() != null && child.getRight() != null) {
-							// Find the maximum value in left subtree.
-							max(child.getLeft(), sorted);
-							max = sorted.get(sorted.size() - 1);
-							// Delete the node with that value
-							delete(node, max);
-							// Replace the current key value with the found max
-							// value
-							child.setData(max);
+				if (node.getLeft() == null)
+					System.out.println("Key not found...");
+				else {
+					BinaryTreeNode child = node.getLeft();
+					// Mark child for deletion if key found.
+					if (child.getData() == key) {
+						// If node has no further children, delete its reference
+						// from parent.
+						if (child.getLeft() == null && child.getRight() == null)
+							node.setLeft(null);
+						else {
+							// If only left child exists, assign that to the
+							// parent
+							if (child.getLeft() != null
+									&& child.getRight() == null)
+								node.setLeft(child.getLeft());
+							// If only right child exists, assign that to the
+							// parent
+							if (child.getLeft() == null
+									&& child.getRight() != null)
+								node.setLeft(child.getRight());
+							if (child.getLeft() != null
+									&& child.getRight() != null) {
+								// Find the maximum value in left subtree.
+								max(child.getLeft(), sorted);
+								max = sorted.get(sorted.size() - 1);
+								// Delete the node with that value
+								delete(node, max);
+								// Replace the current key value with the found
+								// max
+								// value
+								child.setData(max);
+							}
 						}
-					}
-				} else
-					delete(child, key);
+					} else
+						delete(child, key);
+				}
 			} else if (key > node.getData()) {
-				BinaryTreeNode child = node.getRight();
-				if (child.getData() == key) {
-					// If node has no further children, delete its reference
-					// from parent.
-					if (child.getLeft() == null && child.getRight() == null)
-						node.setRight(null);
-					else {
-						// If only left child exists, assign that to the parent
-						if (child.getLeft() != null && child.getRight() == null)
-							node.setRight(child.getLeft());
-						// If only right child exists, assign that to the parent
-						if (child.getLeft() == null && child.getRight() != null)
-							node.setRight(child.getRight());
-						if (child.getLeft() != null && child.getRight() != null) {
-							// Find the maximum value in left subtree.
-							max(child.getLeft(), sorted);
-							max = sorted.get(sorted.size() - 1);
-							// Delete the node with that value
-							delete(node, max);
-							// Replace the current key value with the found max
-							// value
-							child.setData(max);
+				if (node.getRight() == null)
+					System.out.println("Key not found...");
+				else {
+					BinaryTreeNode child = node.getRight();
+					if (child.getData() == key) {
+						// If node has no further children, delete its reference
+						// from parent.
+						if (child.getLeft() == null && child.getRight() == null)
+							node.setRight(null);
+						else {
+							// If only left child exists, assign that to the
+							// parent
+							if (child.getLeft() != null
+									&& child.getRight() == null)
+								node.setRight(child.getLeft());
+							// If only right child exists, assign that to the
+							// parent
+							if (child.getLeft() == null
+									&& child.getRight() != null)
+								node.setRight(child.getRight());
+							if (child.getLeft() != null
+									&& child.getRight() != null) {
+								// Find the maximum value in left subtree.
+								max(child.getLeft(), sorted);
+								max = sorted.get(sorted.size() - 1);
+								// Delete the node with that value
+								delete(node, max);
+								// Replace the current key value with the found
+								// max
+								// value
+								child.setData(max);
+							}
 						}
-					}
-				} else
-					delete(child, key);
+					} else
+						delete(child, key);
+				}
 			}
 		}
 	}
@@ -195,7 +216,7 @@ public class BinarySearchTree {
 		max(root, inorder);
 		int d1PosInorder = inorder.indexOf(d1);
 		int d2PosInorder = inorder.indexOf(d2);
-		//If either of the nodes (d1, d2) does not exist, return -1
+		// If either of the nodes (d1, d2) does not exist, return -1
 		if (d1PosInorder == -1 || d2PosInorder == -1)
 			return -1;
 		List<Integer> inorderAnc = inorder.subList(d1PosInorder, d2PosInorder);
@@ -219,20 +240,62 @@ public class BinarySearchTree {
 			return ((float) (inorder.get(size / 2 - 1) + inorder.get(size / 2))) / 2;
 	}
 
+	private int getHeight(BinaryTreeNode node) {
+		if (node.equals(null))
+			return 0;
+		return Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1;
+	}
+
+	private int checkHeight(BinaryTreeNode node) {
+		if (node == null)
+			return 0;
+
+		int leftHeight = checkHeight(node.getLeft());
+		if (leftHeight == -1)
+			return -1;
+
+		int rightHeight = checkHeight(node.getRight());
+		if (rightHeight == -1)
+			return -1;
+
+		int heightDiff = Math.abs(leftHeight - rightHeight);
+		if (heightDiff > 1)
+			return -1; // Not balanced
+		else
+			return Math.max(leftHeight, rightHeight) + 1;
+	}
+
+	public boolean isBalanced(BinaryTreeNode node) {
+		if (checkHeight(node) == -1)
+			return false;
+		else
+			return true;
+	}
+
+	//Create a minimum height binary tree from a sorted array
+	public BinaryTreeNode createMinHeightTree(int[] arr, int start, int end) {
+		if (start>end)
+			return null;
+		int mid = (start + end)/2;
+		BinaryTreeNode node = new BinaryTreeNode(arr[mid]);
+		node.setLeft(createMinHeightTree(arr, start, mid-1));
+		node.setRight(createMinHeightTree(arr, mid+1, end));
+		return node;
+	}
+	
+	public BinaryTreeNode createMinHeightTree(int[] arr) {
+		return createMinHeightTree(arr, 0, arr.length-1);
+	}
 	public static void main(String[] args) {
 		BinarySearchTree bst = new BinarySearchTree();
-		bst.insert(bst.root, 4);
-		bst.insert(bst.root, 1);
+		bst.insert(bst.root, 14);
+		bst.insert(bst.root, 6);
 		bst.insert(bst.root, 12);
 		bst.insert(bst.root, 24);
 		bst.insert(bst.root, 33);
 		bst.insert(bst.root, 15);
 		bst.insert(bst.root, 7);
 		bst.insert(bst.root, 3);
-		bst.insert(bst.root, 7);
-		bst.insert(bst.root, 9);
-		bst.insert(bst.root, 10);
-		bst.insert(bst.root, 8);
 
 		System.out.println();
 		System.out.println("Preorder: ");
@@ -247,6 +310,10 @@ public class BinarySearchTree {
 		System.out.println();
 		System.out.println("Postorder: ");
 		bst.postorderTraversal(bst.root);
+		System.out.println("-----------");
+
+		System.out.println();
+		System.out.println("Balanced?: " + bst.isBalanced(bst.root));
 		System.out.println("-----------");
 
 		System.out.println();
@@ -276,6 +343,24 @@ public class BinarySearchTree {
 
 		System.out.println();
 		System.out.println("Median: " + bst.median());
+		System.out.println("-----------");
+		
+		int[] arr = {1,2,3,4,5,6,7,8,9};
+		BinarySearchTree minBST = new BinarySearchTree();
+		minBST.root = minBST.createMinHeightTree(arr);
+		System.out.println();
+		System.out.println("Preorder: ");
+		minBST.preorderTraversal(minBST.root);
+		System.out.println("-----------");
+
+		System.out.println();
+		System.out.println("Inorder: ");
+		minBST.inorderTraversal(minBST.root);
+		System.out.println("-----------");
+
+		System.out.println();
+		System.out.println("Postorder: ");
+		minBST.postorderTraversal(minBST.root);
 		System.out.println("-----------");
 	}
 

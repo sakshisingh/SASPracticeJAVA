@@ -6,11 +6,11 @@ package DataStructures;
 public class Stack {
 	Node top;
 	
-	Stack(){
+	public Stack(){
 		top = null;
 	}
 	
-	Stack(int num) {
+	protected Stack(int num) {
 		top.setData(num);
 		top.setNext(null);
 	}
@@ -49,6 +49,10 @@ public class Stack {
 		return num;
 	}
 	
+	public boolean isEmpty() {
+		return (top == null);
+	}
+	
 	public void display() {
 		Node current = top;
 		System.out.println("---------------------");
@@ -67,11 +71,11 @@ public class Stack {
 	public static void main(String[] args) {
 		Stack stk = new Stack();
 		stk.push(1);
-		stk.push(2);
 		stk.push(3);
-		stk.push(4);
-		stk.push(5);
+		stk.push(2);
 		stk.push(6);
+		stk.push(5);
+		stk.push(4);
 		
 		stk.display();
 		
